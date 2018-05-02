@@ -15,6 +15,8 @@ namespace ArticleServer.Service.Mapper
             {
                 cfg.CreateMap<Article, ArticleDto>();
                 cfg.CreateMap<ArticleDto, Article>();
+                cfg.CreateMap<WriterUser, WriterDto>();
+                cfg.CreateMap<WriterDto, WriterUser>();
             });
 
         public static IMapper Create()

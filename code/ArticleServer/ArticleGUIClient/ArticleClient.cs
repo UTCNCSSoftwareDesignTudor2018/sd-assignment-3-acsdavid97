@@ -25,5 +25,19 @@ namespace ArticleGUIClient
             var articles = Utils.ReadObject<ArticleDto[]>(_stream);
             return articles;
         }
+
+        public bool AddArticle(ArticleDto article, WriterDto writer)
+        {
+            Utils.SendObject(Constants.AddArticleCommand, _stream);
+            var response = Utils.ReadObject<string>(_stream);
+            var articleUpdateDto = new ArticleUpdateDto
+            {
+                ArticleDto = article,
+                WriterDto = writer
+            };
+            Utils.SendObject(articleUpdateDto, _stream);
+            var finalResponse = Utils.ReadObject<string>(_stream);
+            return finalResponse == Constants.Success;
+        }
     }
 }

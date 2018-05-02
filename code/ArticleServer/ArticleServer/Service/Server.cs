@@ -15,16 +15,18 @@ using AutoMapper;
 
 namespace ArticleServer.Service
 {
-    public class Server
+    public class Server 
     {
         private readonly IMapper _mapper;
         private readonly ArticleBll _articleBll;
+        private readonly WriterBll _writerBll;
         private readonly IList<NetworkStream> _connectedClients;
         private readonly ManualResetEvent _acceptDone = new ManualResetEvent(false);
 
-        public Server(ArticleBll articleBll, IMapper mapper)
+        public Server(ArticleBll articleBll, IMapper mapper, WriterBll writerBll1)
         {
             _articleBll = articleBll;
+            _writerBll = writerBll1;
             _mapper = mapper;
             _connectedClients = new List<NetworkStream>();
         }
@@ -33,6 +35,9 @@ namespace ArticleServer.Service
         {
             var localIp = IPAddress.Parse("127.0.0.1");
             var server = new TcpListener(localIp, 11000);
+
+            var updateThread = new Thread(UpdateThread);
+            updateThread.Start();
 
             server.Start();
 
@@ -45,16 +50,33 @@ namespace ArticleServer.Service
             }
         }
 
+        private void UpdateThread()
+        {
+            var localIp = IPAddress.Parse("127.0.0.1");
+            var server = new TcpListener(localIp, 11001);
+
+            server.Start();
+
+            while (true)
+            {
+                Console.WriteLine("waiting for update client");
+                var client = server.AcceptTcpClient();
+                Console.WriteLine("update client accepted");
+                var stream = client.GetStream();
+                lock (_connectedClients)
+                {
+                    _connectedClients.Add(stream);
+                }
+                Console.WriteLine("update client added");
+            }
+        }
+
         private void HandleClient(IAsyncResult ar)
         {
             var server = (TcpListener) ar.AsyncState;
             var client = server.EndAcceptTcpClient(ar);
             _acceptDone.Set();
             var stream = client.GetStream();
-            lock (_connectedClients)
-            {
-                _connectedClients.Add(stream);
-            }
 
             Console.WriteLine("Client connected");
             while (true)
@@ -70,10 +92,26 @@ namespace ArticleServer.Service
 
                 if (message == Constants.AddArticleCommand)
                 {
-                    Console.WriteLine("Client adding article");
-                    var articleDto = Utils.ReadObject<ArticleDto>(stream);
-                    var article = _mapper.Map<Article>(articleDto);
-                    _articleBll.AddArticle(article);
+                    try
+                    {
+                        Console.WriteLine("Client adding article");
+                        Utils.SendObject(Constants.Success, stream);
+                        var articleUpdateDto = Utils.ReadObject<ArticleUpdateDto>(stream);
+                        var articleDto = articleUpdateDto.ArticleDto;
+                        var writerDto = articleUpdateDto.WriterDto;
+                        var article = _mapper.Map<Article>(articleDto);
+                        article.Writer = _writerBll.FindWriter(writerDto.Name, writerDto.Password);
+                        _articleBll.AddArticle(article);
+                        Utils.SendObject(Constants.Success, stream);
+
+                        Console.WriteLine("Successfully added article");
+
+                        NotifyObservers();
+                    }
+                    catch (Exception e)
+                    {
+                        Utils.SendObject(Constants.Error, stream);
+                    }
                 }
 
                 if (message == Constants.ExitCommand)
@@ -90,6 +128,17 @@ namespace ArticleServer.Service
 
 
             client.Close();
+        }
+
+        private void NotifyObservers()
+        {
+            lock (_connectedClients)
+            {
+                foreach (var connected in _connectedClients)
+                {
+                    Utils.SendObject(Constants.Update, connected);
+                }
+            }
         }
     }
 }

@@ -11,17 +11,40 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
         <Grid Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="5*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <ListBox Name="ArticleList" SelectionMode="Single" Grid.Row="0"  ItemsSource="{Binding Articles}" SelectedItem="{Binding SelectedArticleDto}"/>
-            <Button Grid.Row="1" Command="{Binding UpdateCommand}">Update</Button>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Label Grid.Row="0" Grid.Column="0">Title</Label>
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EditingArticleDto.Title}"></TextBox>
+            <Label Grid.Row="1" Grid.Column="0">Abstract</Label>
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding EditingArticleDto.Abstract}"></TextBox>
+            <Label Grid.Row="2" Grid.Column="0">Body</Label>
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding EditingArticleDto.Body}"/>
+            <Label Grid.Row="3" Grid.Column="0">Writer name</Label>
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding WriterDto.Name}"/>
+            <Label Grid.Row="4" Grid.Column="0">Password</Label>
+            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding WriterDto.Password}"/>
+
+            <Button Grid.Row="5" Grid.Column="0" Command="{Binding AddCommand}">Add Article</Button>
+            <Button Grid.Row="5" Grid.Column="1" Command="{Binding AddCommand}">Add Article</Button>
         </Grid>
-        <FlowDocumentReader Grid.Column="1">
+
+        <ListBox Name="ArticleList" SelectionMode="Single" Grid.Column="1"  ItemsSource="{Binding Articles}" SelectedItem="{Binding SelectedArticleDto}"/>
+        <FlowDocumentReader Grid.Column="2">
             <FlowDocument>
                 <Section FontSize="20" >
                     <Paragraph>

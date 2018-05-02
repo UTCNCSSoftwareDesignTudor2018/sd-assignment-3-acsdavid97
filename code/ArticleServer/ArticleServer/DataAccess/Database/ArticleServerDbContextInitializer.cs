@@ -18,13 +18,15 @@ namespace ArticleServer.DataAccess.Database
                 new WriterUser
                 {
                     Articles = new List<Article>(),
-                    Name = "First writer"
+                    Name = "first_writer",
+                    Password = "first"
                 },
 
                 new WriterUser
                 {
                     Articles = new List<Article>(),
-                    Name = "Second Writer"
+                    Name = "second_writer",
+                    Password = "second"
                 },
             };
 

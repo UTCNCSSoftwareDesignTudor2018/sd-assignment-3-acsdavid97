@@ -98,6 +98,8 @@
     <Compile Include="Business\Entity\Article.cs" />
     <Compile Include="Business\Entity\WriterUser.cs" />
     <Compile Include="Business\Process\ArticleBll.cs" />
+    <Compile Include="Business\Process\WriterBll.cs" />
+    <Compile Include="Business\Validator\ArticleValidator.cs" />
     <Compile Include="DataAccess\Database\ArticleServerDbContext.cs" />
     <Compile Include="DataAccess\Database\ArticleServerDbContextInitializer.cs" />
     <Compile Include="DataAccess\Repository\ArticleRepository.cs" />

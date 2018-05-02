@@ -47,5 +47,10 @@ namespace ArticleServer.DataAccess.Repository
             _dbContext.Writers.Remove(toDelete);
             _dbContext.SaveChanges();
         }
+
+        public WriterUser Get(string name, string password)
+        {
+            return _dbContext.Writers.FirstOrDefault(w => w.Name == name && w.Password == password);
+        }
     }
 }
