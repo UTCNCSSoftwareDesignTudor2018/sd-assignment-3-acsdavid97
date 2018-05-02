@@ -11,6 +11,7 @@ using ArticleClientServerCommons;
 using ArticleClientServerCommons.Dto;
 using ArticleServer.Business.Entity;
 using ArticleServer.Business.Process;
+using ArticleServer.Service.Command;
 using AutoMapper;
 
 namespace ArticleServer.Service
@@ -84,50 +85,94 @@ namespace ArticleServer.Service
                 var message = Utils.ReadObject<string>(stream);
                 if (message == Constants.GetArticlesCommand)
                 {
-                    Console.WriteLine("Client requesting articles");
-                    var articles = _articleBll.GetArticles();
-                    var articleDtos = _mapper.Map<ArticleDto[]>(articles);
-                    Utils.SendObject(articleDtos, stream);
+                    HandleGetArticles(stream);
+                }
+
+                if (message == Constants.UpdateArticleCommand)
+                {
+                    HandleUpdateArticle(stream);
                 }
 
                 if (message == Constants.AddArticleCommand)
                 {
-                    try
-                    {
-                        Console.WriteLine("Client adding article");
-                        Utils.SendObject(Constants.Success, stream);
-                        var articleUpdateDto = Utils.ReadObject<ArticleUpdateDto>(stream);
-                        var articleDto = articleUpdateDto.ArticleDto;
-                        var writerDto = articleUpdateDto.WriterDto;
-                        var article = _mapper.Map<Article>(articleDto);
-                        article.Writer = _writerBll.FindWriter(writerDto.Name, writerDto.Password);
-                        _articleBll.AddArticle(article);
-                        Utils.SendObject(Constants.Success, stream);
-
-                        Console.WriteLine("Successfully added article");
-
-                        NotifyObservers();
-                    }
-                    catch (Exception e)
-                    {
-                        Utils.SendObject(Constants.Error, stream);
-                    }
+                    HandleAddArticle(stream);
                 }
 
                 if (message == Constants.ExitCommand)
                 {
-                    Console.WriteLine("Client exiting");
-                    lock (_connectedClients)
-                    {
-                        _connectedClients.Remove(stream);
-                        stream.Close();
-                        break;
-                    }
+                    HandleExit(stream);
+                    break;
                 }
             }
 
-
             client.Close();
+        }
+
+        private void HandleUpdateArticle(NetworkStream stream)
+        {
+            try
+            {
+                Console.WriteLine("Client updating article");
+                Utils.SendObject(Constants.Success, stream);
+                var articleUpdateDto = Utils.ReadObject<ArticleUpdateDto>(stream);
+                var articleDto = articleUpdateDto.ArticleDto;
+                var writerDto = articleUpdateDto.WriterDto;
+                var article = _mapper.Map<Article>(articleDto);
+                article.Writer = _writerBll.FindWriter(writerDto.Name, writerDto.Password);
+                _articleBll.UpdateArticle(article);
+                Utils.SendObject(Constants.Success, stream);
+
+                Console.WriteLine("Successfully updated article");
+
+                NotifyObservers();
+            }
+            catch (Exception e)
+            {
+                Utils.SendObject(Constants.Error, stream);
+            }
+        }
+
+        private void HandleExit(NetworkStream stream)
+        {
+            Console.WriteLine("Client exiting");
+            lock (_connectedClients)
+            {
+                _connectedClients.Remove(stream);
+                stream.Close();
+                return;
+            }
+        }
+
+        private void HandleAddArticle(NetworkStream stream)
+        {
+            try
+            {
+                Console.WriteLine("Client adding article");
+                Utils.SendObject(Constants.Success, stream);
+                var articleUpdateDto = Utils.ReadObject<ArticleUpdateDto>(stream);
+                var articleDto = articleUpdateDto.ArticleDto;
+                var writerDto = articleUpdateDto.WriterDto;
+                var article = _mapper.Map<Article>(articleDto);
+                article.Writer = _writerBll.FindWriter(writerDto.Name, writerDto.Password);
+                _articleBll.AddArticle(article);
+                Utils.SendObject(Constants.Success, stream);
+
+                Console.WriteLine("Successfully added article");
+
+                NotifyObservers();
+            }
+            catch (Exception e)
+            {
+                Utils.SendObject(Constants.Error, stream);
+            }
+        }
+
+        private void HandleGetArticles(NetworkStream stream)
+        {
+            Console.WriteLine("Client requesting articles");
+            var articles = _articleBll.GetArticles();
+            var articleDtos = _mapper.Map<ArticleDto[]>(articles);
+            Utils.SendObject(articleDtos, stream);
         }
 
         private void NotifyObservers()

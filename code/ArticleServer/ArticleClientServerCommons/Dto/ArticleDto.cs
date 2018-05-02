@@ -16,7 +16,7 @@ namespace ArticleClientServerCommons.Dto
 
         public override string ToString()
         {
-            return $"{nameof(Id)}: {Id}, {nameof(Title)}: {Title}, {nameof(Abstract)}: {Abstract}, {nameof(WriterId)}: {WriterId}, {nameof(Body)}: {Body}";
+            return $"{nameof(Title)}: {Title}";
         }
     }
 }

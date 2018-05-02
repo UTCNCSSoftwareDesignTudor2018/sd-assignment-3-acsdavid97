@@ -27,6 +27,21 @@ namespace ArticleGUIClient
         public IList<ArticleDto> Articles { get; private set; }
 
         public ICommand AddCommand => new RelayCommand<object>(ExecuteAdd, CanExecuteAdd);
+        public ICommand UpdateCommand => new RelayCommand<object>(ExecuteUpdate, CanExecuteUpdate);
+
+        private bool CanExecuteUpdate(object obj)
+        {
+            return SelectedArticleDto != null;
+        }
+
+        private void ExecuteUpdate(object obj)
+        {
+            var success = _client.UpdateArticle(EditingArticleDto, SelectedArticleDto, WriterDto);
+            if (!success)
+            {
+                MessageBox.Show("Error while updating, check the input");
+            }
+        }
 
         private static bool CanExecuteAdd(object o)
         {

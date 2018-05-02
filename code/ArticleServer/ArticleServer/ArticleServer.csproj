@@ -109,6 +109,9 @@
     <Compile Include="DataAccess\Repository\WriterRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\Command\CommandFactory.cs" />
+    <Compile Include="Service\Command\GetArticleCommand.cs" />
+    <Compile Include="Service\Command\IServerCommand.cs" />
     <Compile Include="Service\Mapper\MapperConfig.cs" />
     <Compile Include="Service\Server.cs" />
   </ItemGroup>

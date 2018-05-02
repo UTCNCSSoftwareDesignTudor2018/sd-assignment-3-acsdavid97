@@ -39,5 +39,14 @@ namespace ArticleServer.Business.Process
                 _articleRepository.Insert(article);
             }
         }
+
+        public void UpdateArticle(Article article)
+        {
+            _validator.Validate(article);
+            lock (_articleRepository)
+            {
+                _articleRepository.Update(article);
+            }
+        }
     }
 }
