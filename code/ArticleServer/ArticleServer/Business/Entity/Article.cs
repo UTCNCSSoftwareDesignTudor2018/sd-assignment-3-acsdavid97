@@ -11,7 +11,7 @@ namespace ArticleServer.Business.Entity
         public int Id { get; set; }
         public string Title { get; set; }
         public string Abstract { get; set; }
-        public WriterUser Writer { get; set; }
+        public virtual WriterUser Writer { get; set; }
         public string Body { get; set; }
     }
 }
