@@ -28,6 +28,21 @@ namespace ArticleGUIClient
 
         public ICommand AddCommand => new RelayCommand<object>(ExecuteAdd, CanExecuteAdd);
         public ICommand UpdateCommand => new RelayCommand<object>(ExecuteUpdate, CanExecuteUpdate);
+        public ICommand DeleteCommand => new RelayCommand<object>(ExecuteDelete, CanExecuteDelete);
+
+        private void ExecuteDelete(object obj)
+        {
+            var success = _client.DeleteArticle(SelectedArticleDto, WriterDto);
+            if (!success)
+            {
+                MessageBox.Show("Error while deleting, check credentials");
+            }
+        }
+
+        private bool CanExecuteDelete(object obj)
+        {
+            return SelectedArticleDto != null;
+        }
 
         private bool CanExecuteUpdate(object obj)
         {

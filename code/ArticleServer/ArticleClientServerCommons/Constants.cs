@@ -11,5 +11,6 @@
         public static readonly string Error = "Error";
         public static readonly string Update = "Update";
         public static readonly string UpdateArticleCommand = "UpdateArticle";
+        public static readonly string DeleteArticleCommand = "DeleteArticle";
     }
 }

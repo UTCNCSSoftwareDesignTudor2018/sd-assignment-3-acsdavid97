@@ -54,5 +54,19 @@ namespace ArticleGUIClient
             var finalResponse = Utils.ReadObject<string>(_stream);
             return finalResponse == Constants.Success;
         }
+
+        public bool DeleteArticle(ArticleDto todetele, WriterDto writer)
+        {
+            Utils.SendObject(Constants.DeleteArticleCommand, _stream);
+            var response = Utils.ReadObject<string>(_stream);
+            var articleUpdateDto = new ArticleUpdateDto
+            {
+                ArticleDto = todetele,
+                WriterDto = writer
+            };
+            Utils.SendObject(articleUpdateDto, _stream);
+            var finalResponse = Utils.ReadObject<string>(_stream);
+            return finalResponse == Constants.Success;
+        }
     }
 }

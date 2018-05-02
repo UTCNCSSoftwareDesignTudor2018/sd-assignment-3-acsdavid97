@@ -44,7 +44,8 @@ namespace ArticleServer.DataAccess.Repository
 
         public void Delete(Article toDelete)
         {
-            _dbContext.Articles.Remove(toDelete);
+            var article = Get(toDelete.Id);
+            _dbContext.Articles.Remove(article);
             _dbContext.SaveChanges();
         }
     }

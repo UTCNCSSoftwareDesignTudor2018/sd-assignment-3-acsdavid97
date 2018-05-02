@@ -22,6 +22,7 @@
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
@@ -31,9 +32,9 @@
             <Label Grid.Row="0" Grid.Column="0">Title</Label>
             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding EditingArticleDto.Title}"></TextBox>
             <Label Grid.Row="1" Grid.Column="0">Abstract</Label>
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding EditingArticleDto.Abstract}"></TextBox>
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding EditingArticleDto.Abstract}" AcceptsReturn="True" TextWrapping="Wrap"/>
             <Label Grid.Row="2" Grid.Column="0">Body</Label>
-            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding EditingArticleDto.Body}"/>
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding EditingArticleDto.Body}" AcceptsReturn="True" TextWrapping="Wrap"/>
             <Label Grid.Row="3" Grid.Column="0">Writer name</Label>
             <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding WriterDto.Name}"/>
             <Label Grid.Row="4" Grid.Column="0">Password</Label>
@@ -41,6 +42,7 @@
 
             <Button Grid.Row="5" Grid.Column="0" Command="{Binding AddCommand}">Add Article</Button>
             <Button Grid.Row="5" Grid.Column="1" Command="{Binding UpdateCommand}">Update Article</Button>
+            <Button Grid.Row="6" Grid.Column="0" Command="{Binding DeleteCommand}">Delete Article</Button>
         </Grid>
 
         <ListBox Name="ArticleList" SelectionMode="Single" Grid.Column="1"  ItemsSource="{Binding Articles}" SelectedItem="{Binding SelectedArticleDto}"/>

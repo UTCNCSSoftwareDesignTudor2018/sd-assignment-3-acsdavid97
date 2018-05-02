@@ -48,5 +48,13 @@ namespace ArticleServer.Business.Process
                 _articleRepository.Update(article);
             }
         }
+
+        public void DeleteArticle(Article article)
+        {
+            lock (_articleRepository)
+            {
+                _articleRepository.Delete(article);
+            }
+        }
     }
 }
